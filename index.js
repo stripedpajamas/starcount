@@ -22,7 +22,7 @@ const getStarsForRepo = (repo) => '⭐  '.repeat(repo.stargazers_count)
     user = response.user
   }
 
-  const repos = await fetch(getEndpoint(user))
+  const repoResponse = await fetch(getEndpoint(user))
     .then(res => res.json())
     .catch(() => {
       console.log(`${
@@ -31,8 +31,17 @@ const getStarsForRepo = (repo) => '⭐  '.repeat(repo.stargazers_count)
       process.exit(1)
     })
 
+  let repos = Array.isArray(repoResponse) ? repoResponse : []
+
   const filteredRepos = filterRepos(repos)
   const starcount = countStars(filteredRepos)
+
+  if (!starcount) {
+    console.log(`${
+      c.white.bold(`✨ ${user} has no stars`)
+    }`)
+    process.exit(0)
+  }
 
   console.log(`${
     c.white.bold(`✨ ${user} has ${starcount} total stars`)
