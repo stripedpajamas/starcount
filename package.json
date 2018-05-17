@@ -1,6 +1,6 @@
 {
   "name": "starcount",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "get how many stars a user's own repos have on github",
   "main": "index.js",
   "bin": {
