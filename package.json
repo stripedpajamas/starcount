@@ -1,0 +1,33 @@
+{
+  "name": "starcount",
+  "version": "1.0.0",
+  "description": "get how many stars a user's own repos have on github",
+  "main": "index.js",
+  "bin": {
+    "starcount": "index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stripedpajamas/starcount.git"
+  },
+  "keywords": [
+    "star",
+    "count",
+    "github",
+    "repo"
+  ],
+  "author": "Peter Squicciarini <stripedpajamas273@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stripedpajamas/starcount/issues"
+  },
+  "homepage": "https://github.com/stripedpajamas/starcount#readme",
+  "dependencies": {
+    "clorox": "^1.0.3",
+    "node-fetch": "^2.1.2",
+    "prompts": "^0.1.8"
+  }
+}
