@@ -27,7 +27,9 @@
   "homepage": "https://github.com/stripedpajamas/starcount#readme",
   "dependencies": {
     "clorox": "^1.0.3",
+    "http-link-header": "^0.8.0",
     "node-fetch": "^2.1.2",
+    "ora": "^2.1.0",
     "prompts": "^0.1.8"
   }
 }

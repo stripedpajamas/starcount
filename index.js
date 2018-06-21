@@ -1,12 +1,44 @@
 #!/usr/bin/env node
 const fetch = require('node-fetch')
+const links = require('http-link-header')
 const prompt = require('prompts')
 const c = require('clorox')
+const ora = require('ora')
 
 const getEndpoint = (user) => `https://api.github.com/users/${user}/repos`
 const filterRepos = (repos) => repos.filter(repo => !repo.fork && repo.stargazers_count > 0)
 const countStars = (repos) => repos.reduce((total, repo) => total + repo.stargazers_count, 0)
 const getStarsForRepo = (repo) => '⭐  '.repeat(repo.stargazers_count)
+
+const getAllRepos = async (user) => {
+  let repos = []
+  const getRepo = (endpoint = getEndpoint(user)) => {
+    let nextPage
+    return fetch(endpoint)
+    .then(res => {
+      const refs = links.parse(res.headers.get('link') || '')
+      nextPage = refs.get('rel', 'next')[0]
+      return res.json()
+    })
+    .then(json => {
+      if (Array.isArray(json)) {
+        repos = repos.concat(json)
+        if (nextPage) {
+          return getRepo(nextPage.uri)
+        }
+      }
+      return repos
+    })
+    .catch((e) => {
+      console.log(`${
+        c.red.bold('😞 Something went wrong! Sorry.')
+      }`)
+      process.exit(1)
+    })
+  }
+  await getRepo()
+  return repos
+}
 
 ;(async () => {
   let user
@@ -22,16 +54,9 @@ const getStarsForRepo = (repo) => '⭐  '.repeat(repo.stargazers_count)
     user = response.user
   }
 
-  const repoResponse = await fetch(getEndpoint(user))
-    .then(res => res.json())
-    .catch(() => {
-      console.log(`${
-        c.red.bold('😞 Something went wrong! Sorry.')
-      }`)
-      process.exit(1)
-    })
-
-  let repos = Array.isArray(repoResponse) ? repoResponse : []
+  const spinner = ora('Loading stars').start();
+  const repos = await getAllRepos(user)
+  spinner.stop()
 
   const filteredRepos = filterRepos(repos)
   const starcount = countStars(filteredRepos)
